@@ -12,14 +12,9 @@ public class PlayerLook : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
     }
-
-    void Update(){
-        ProcessLook();
-    }
-
-    public void ProcessLook(){   //param : Vector2 input
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
+    public void ProcessLook(Vector2 input){
+        float mouseX = input.x;
+        float mouseY = input.y;
         //caculate camera rotation up down
         xRotation -= (mouseY * Time.deltaTime) * ySensitivity;
         xRotation = Mathf.Clamp(xRotation, -80f, 80f);
@@ -29,4 +24,4 @@ public class PlayerLook : MonoBehaviour
         transform.Rotate(Vector3.up * (mouseX * Time.deltaTime) * xSensitivity);
     }
 
-}
+}   
