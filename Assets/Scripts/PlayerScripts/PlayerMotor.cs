@@ -6,68 +6,45 @@ public class PlayerMotor : MonoBehaviour
 {
     private CharacterController controller;
     private bool isGrounded;
+    public float gravity = -9.8f;
     private Vector3 playerVelocity;
-
-    [Header("Movement Settings")]
     public float walkSpeed = 5f;
+    public float jumpHeight = 3f;
     public float runSpeed = 10f;
     private bool isRunning;
-
-    [Header("Jump & Gravity Settings")]
-    public float gravity = -20f;
-    public float jumpHeight = 1.2f;
-    public float fallMultiplier = 2.5f; // 只保留加速下墜
-
     void Start()
     {
         controller = GetComponent<CharacterController>();
     }
 
+    // Update is called once per frame
     void Update()
     {
         isGrounded = controller.isGrounded;
-
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
+        if(Input.GetKey(KeyCode.LeftShift)){
             isRunning = true;
-        }
-        else
-        {
+        }else{
             isRunning = false;
         }
-
-        // 加快下墜速度
-        if (playerVelocity.y < 0)
-        {
-            playerVelocity.y += gravity * (fallMultiplier - 1) * Time.deltaTime;
-        }
     }
-
-    public void ProcessMove(Vector2 input)
-    {
+    //receive the inputs for InputManager.cs and apply it to the character controller
+    public void ProcessMove(Vector2 input){
         Vector3 moveDirection = Vector3.zero;
         moveDirection.x = input.x;
         moveDirection.z = input.y;
 
-        float currentSpeed = isRunning ? runSpeed : walkSpeed;
+        float currentSpeed = isRunning?runSpeed:walkSpeed; // check the speed wether running or not 
         controller.Move(transform.TransformDirection(moveDirection) * currentSpeed * Time.deltaTime);
-
-        // Apply gravity
         playerVelocity.y += gravity * Time.deltaTime;
-
-        if (isGrounded && playerVelocity.y < 0)
-        {
+        if(isGrounded && playerVelocity.y < 0){
             playerVelocity.y = -2f;
         }
-
         controller.Move(playerVelocity * Time.deltaTime);
+        // Debug.Log(playerVelocity.y);
     }
-
-    public void Jump()
-    {
-        if (isGrounded)
-        {
-            playerVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+    public void Jump(){
+        if(isGrounded){ // wether on grounded or not
+            playerVelocity.y = Mathf.Sqrt(jumpHeight * -3.0f * gravity);
         }
     }
 }
